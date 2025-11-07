@@ -1,0 +1,7 @@
+<FemurDistances>
+<Distance from="KneeCenter" to="Hip Center">410.77</Distance>
+<Distance from="KneeCenter" to="Femur Medial Condyle">26.26</Distance>
+<Distance from="KneeCenter" to="Femur Lateral Condyle">16.18</Distance>
+<Distance from="KneeCenter" to="SME">39.35</Distance>
+<Distance from="KneeCenter" to="SLE">34.30</Distance>
+</FemurDistances>

@@ -1,0 +1,7 @@
+<TibiaDistances>
+    <Distance from="KneeCenter" to="Tibia Medial Condyle">19.00</Distance>
+    <Distance from="KneeCenter" to="Tibia Lateral Condyle">23.40</Distance>
+    <Distance from="KneeCenter" to="Tuberosity">43.30</Distance>
+    <Distance from="KneeCenter" to="PCL">26.20</Distance>
+    <Distance from="KneeCenter" to="Ankle Center">353.70</Distance>
+</TibiaDistances>

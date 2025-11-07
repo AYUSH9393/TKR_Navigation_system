@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TKR Navigation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .video-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .video-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .video-info-item {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        #videoFeed {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .fps-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #0f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            display: none;  /* Hide FPS counter */
+        }
+        
+        /* Results Grid Below Video */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .results-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .result-item-compact {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .result-label-compact {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .result-value-compact {
+            font-size: 20px;
+            font-weight: 700;
+            color: #212529;
+        }
+        
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .control-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .control-panel h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-display {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .status-row:last-child {
+            border-bottom: none;
+        }
+        
+        .status-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .status-value {
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        .results-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .result-item {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        
+        .result-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #212529;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .connected {
+            background: #28a745;
+            color: white;
+        }
+        
+        .disconnected {
+            background: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus">● Connected</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🏥 TKR Navigation System</h1>
+            <p>Real-time Surgical Guidance & Measurement</p>
+        </div>
+        
+        <div class="main-content">
+            <!-- Video Section -->
+            <div class="video-section">
+                <h3 style="color: #667eea; margin-bottom: 15px;">📹 Live Camera Feed</h3>
+                <div class="video-container">
+                    <img id="videoFeed" src="/video_feed" alt="Camera Feed">
+                    <div class="fps-counter" id="fpsCounter">FPS: --</div>
+                </div>
+            </div>
+            
+            <!-- Controls Section -->
+            <div class="controls-section">
+                <!-- Object Selection -->
+                <div class="control-panel">
+                    <h3>🎯 Select Target</h3>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="selectObject('femur')">
+                            Femur
+                        </button>
+                        <button class="btn-primary" onclick="selectObject('tibia')">
+                            Tibia
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- CT Side Selection -->
+                <div class="control-panel">
+                    <h3>🔄 CT Side</h3>
+                    <div class="button-group">
+                        <button class="btn-secondary" onclick="setCTSide('L')">
+                            Left (L)
+                        </button>
+                        <button class="btn-secondary" onclick="setCTSide('R')">
+                            Right (R)
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="control-panel">
+                    <h3>⚡ Actions</h3>
+                    <div class="button-group">
+                        <button class="btn-success" onclick="capturePoint()">
+                            📍 Capture Point
+                        </button>
+                        <button class="btn-danger" onclick="resetPoints()">
+                            🔄 Reset Points
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Status Display -->
+                <div class="control-panel">
+                    <h3>📊 Current Status</h3>
+                    <div class="status-display">
+                        <div class="status-row">
+                            <span class="status-label">Object:</span>
+                            <span class="status-value" id="currentObject">-</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">CT Side:</span>
+                            <span class="status-value" id="currentSide">-</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Femur Points:</span>
+                            <span class="status-value" id="femurPoints">0</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-label">Tibia Points:</span>
+                            <span class="status-value" id="tibiaPoints">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Display -->
+                <div class="results-panel">
+                    <h3>📈 Detailed Measurements</h3>
+                    <div class="result-item">
+                        <div class="result-label">Varus/Valgus</div>
+                        <div class="result-value" id="varAngle">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Slope</div>
+                        <div class="result-value" id="varFlex">--</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Medial Distance</div>
+                        <div class="result-value" id="tmcDistance">-- mm</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Lateral Distance</div>
+                        <div class="result-value" id="tlcDistance">-- mm</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const videoFeed = document.getElementById('videoFeed');
+        const fpsCounter = document.getElementById('fpsCounter');
+        
+        // Connection status
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            if (connected) {
+                status.className = 'connection-status connected';
+                status.textContent = '● Connected';
+            } else {
+                status.className = 'connection-status disconnected';
+                status.textContent = '● Disconnected';
+            }
+        }
+        
+        // Control functions
+        function selectObject(obj) {
+            fetch('/api/command', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: `select_${obj}`})
+            }).then(r => r.json()).then(data => {
+                console.log(`Selected: ${obj}`);
+                updateStatus();
+            });
+        }
+        
+        function setCTSide(side) {
+            fetch('/api/command', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: 'set_ct_side', side: side})
+            }).then(r => r.json()).then(data => {
+                console.log(`CT Side: ${side}`);
+                updateStatus();
+            });
+        }
+        
+        function capturePoint() {
+            fetch('/api/command', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: 'capture_point'})
+            }).then(r => r.json()).then(data => {
+                console.log('Capture triggered');
+            });
+        }
+        
+        function resetPoints() {
+            fetch('/api/command', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: 'reset'})
+            }).then(r => r.json()).then(data => {
+                console.log('Reset triggered');
+                updateStatus();
+            });
+        }
+        
+        // Update status display
+        function updateStatus() {
+            fetch('/api/status')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('currentObject').textContent = data.selected_object;
+                    document.getElementById('currentSide').textContent = data.ct_side || '-';
+                    document.getElementById('femurPoints').textContent = data.points_captured.femur;
+                    document.getElementById('tibiaPoints').textContent = data.points_captured.tibia;
+                    
+                    // Update FPS from server
+                    const fps = data.fps || 0;
+                    const totalFrames = data.total_frames || 0;
+                    
+                    if (fps > 0) {
+                        fpsCounter.textContent = `FPS: ${fps}`;
+                    } else if (totalFrames > 0) {
+                        fpsCounter.textContent = `Frames: ${totalFrames}`;
+                    } else {
+                        fpsCounter.textContent = 'FPS: --';
+                    }
+                    
+                    updateConnectionStatus(true);
+                })
+                .catch(err => {
+                    console.error('Status update failed:', err);
+                    fpsCounter.textContent = 'FPS: --';
+                    updateConnectionStatus(false);
+                });
+        }
+        
+        // Update results display
+        function updateResults() {
+            fetch('/api/results')
+                .then(r => r.json())
+                .then(data => {
+                    const varAngle = `${Math.abs(data.var_angle).toFixed(0)}° ${data.var_angle_name}`;
+                    const varFlex = `${Math.abs(data.var_flex).toFixed(0)}° ${data.var_flex_name}`;
+                    
+                    document.getElementById('varAngle').textContent = varAngle;
+                    document.getElementById('varFlex').textContent = varFlex;
+                    document.getElementById('tmcDistance').textContent = `${data.tmc_distance.toFixed(0)} mm`;
+                    document.getElementById('tlcDistance').textContent = `${data.tlc_distance.toFixed(0)} mm`;
+                });
+        }
+        
+        // Periodic updates
+        setInterval(updateStatus, 500);
+        setInterval(updateResults, 500);
+        
+        // Initial load
+        updateStatus();
+        updateConnectionStatus(true);
+    </script>
+</body>
+</html>
